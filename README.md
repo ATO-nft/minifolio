@@ -19,6 +19,10 @@ npm i
 npx hardhat run scripts/deploy.ts --network goerli
 ```
 
+## Example
+
+You can check this NFT on [Āto NFT viewer](https://ato.network/Goerli/0x430f3E1b3F1458E2d94452e85113181e318Bcaf2/1) or on [Etherscan](https://goerli.etherscan.io/address/0x430f3e1b3f1458e2d94452e85113181e318bcaf2).
+
 ## Contact
 
 - Email: [julien@ato.network](mailto:julien@ato.network)
