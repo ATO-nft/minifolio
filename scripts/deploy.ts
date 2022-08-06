@@ -4,6 +4,7 @@ async function main() {
 
   const [signer] = await ethers.getSigners();
 
+  // deploy BTC.sol
   const BTC = await ethers.getContractFactory("BTC");
   const btc = await BTC.deploy();
   await btc.deployed();
