@@ -10,6 +10,12 @@ Minifolio uses the [NFT redeem extension](https://github.com/ATO-nft/redeemable)
 npm i
 ```
 
+## Test
+
+```shell
+npx hardhat test
+```
+
 ## Deploy
 
 - Copy the `.env.example` file, rename it `.env`, then add one of your wallets' private key (with 0x at the beginning of the string), your own [Infura](https://infura.io/) project ID (full url) and a [Web3.Storage](https://web3.storage/tokens/) API token.
