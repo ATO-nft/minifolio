@@ -27,7 +27,7 @@ npx hardhat run scripts/deploy.ts --network goerli
 
 ## Example
 
-You can check this NFT on [Āto NFT viewer](https://ato.network/Goerli/0x430f3E1b3F1458E2d94452e85113181e318Bcaf2/1) or on [Etherscan](https://goerli.etherscan.io/address/0x430f3e1b3f1458e2d94452e85113181e318bcaf2).
+You can check this NFT on [Āto NFT viewer](https://ato.network/Goerli/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407/1) or on [Etherscan](https://goerli.etherscan.io/address/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407#tokentxns). Only the holder can redeem ([using Etherscan](https://goerli.etherscan.io/address/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407#writeContract)) the BTC and ETH held in the NFT.
 
 ## Contact
 
