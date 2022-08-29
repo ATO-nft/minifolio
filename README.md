@@ -1,6 +1,6 @@
 # Minifolio
 
-Helps you create an NFT that can hold both a native currency (ETH) and ERC20s (e.g. wBTC). Only the current holder is allowed to reddem these assets.
+Helps you create an NFT that can hold both a native currency (ETH) and ERC20s (e.g. wBTC). Only the current holder is allowed to redeem these assets.
 
 Minifolio uses the [NFT redeem extension](https://github.com/ATO-nft/redeemable).
 
@@ -18,10 +18,19 @@ npx hardhat test
 
 ## Deploy
 
-- Copy the `.env.example` file, rename it `.env`, then add one of your wallets' private key (with 0x at the beginning of the string), your own [Infura](https://infura.io/) project ID (full url) and a [Web3.Storage](https://web3.storage/tokens/) API token.
-- Make sure you have a handful of Goerli ETH in this wallet.
+[Goerli](https://goerli.net/) (testnet) is currently the only supported network.
 
-```
+Copy the [`.env.example`](https://github.com/ATO-nft/ato/blob/main/.env.example) file and rename it `.env`. In this `.env` file, you want to:
+
+- Add one of your wallets' private key ([MetaMask](https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) private key export). It's recommended to create a fresh address, then go grab a handful of Goerli ETH using [this faucet](https://goerlifaucet.com/)
+- Add your own [POKT Network](https://www.pokt.network/) endpoint
+- Add your [Web3.Storage](https://web3.storage/tokens/) API token
+
+Forget about Polygon endpoint and Etherscan API key, you don't need them now.
+
+Then you can go ahead and deploy to Goerli:
+
+```shell
 npx hardhat run scripts/deploy.ts --network goerli
 ```
 
@@ -29,8 +38,6 @@ npx hardhat run scripts/deploy.ts --network goerli
 
 You can check this NFT on [Āto NFT viewer](https://ato.network/Goerli/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407/1) or on [Etherscan](https://goerli.etherscan.io/address/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407#tokentxns). Only the holder can redeem ([using Etherscan](https://goerli.etherscan.io/address/0xFC90B79e7cF85DDcf0F885337C8B8ffa693B1407#writeContract)) the BTC and ETH held in the NFT.
 
-## Contact
+## Support
 
-- Email: [julien@ato.network](mailto:julien@ato.network)
-- Discord: [https://discord.gg/2sFr3dqvfg](https://discord.gg/xw9dCeQ94Y)
-- Twitter: [https://twitter.com/julienbrg](https://twitter.com/julienbrg)
+You can contact us via [Element](https://matrix.to/#/@julienbrg:matrix.org) (preferred), [Twitter](https://twitter.com/julienbrg), [Discord](https://discord.gg/xw9dCeQ94Y), [LinkedIn](https://www.linkedin.com/in/julienberanger/) or [email](mailto:julien@ato.network).
