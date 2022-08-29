@@ -1,6 +1,7 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { handleStorage } from "../metadata/handleStorage"
 
 describe("Minifolio", function () {
 
@@ -455,13 +456,19 @@ describe("Minifolio", function () {
     ] ;
     const btcContract = new ethers.Contract(btc.address, btcContractAbi, issuer);
 
-    const name = "Selection";
-    const symbol = "SELECT";
-    const uri = "bafybeihjf5qkgkxepvs4mmmd77hsw2yw52py6j2blcl4tzjxgrn6aixs7a/metadata.json";
-    const btcAddress = btc.address;
+    const media = "https://ipfs.io/ipfs/bafybeichjaz2dxyvsinz2nx4ho4dmx3qkgvtkitymaeh7jsguhrpbknsru/thistle-black-pixel.jpg " // replace with your own media file name
+    const license = "https://ipfs.io/ipfs/bafybeihzpdxi43xtpbemmhi2ry5wqaj2iangccyumbyeis4bsfykzljazi/thistle-test-IP-license.pdf" // replace with your own license file name
+    const author = "Julien"
+    const name = "Black thistle"
+    const symbol = "THISTLE"
+    const description = "Black thistle was created using go-pixel-art (https://github.com/fairhive-labs/go-pixelart)."
+    const mint = 1 // number of editions
+    const royalties = 8 * 100 // 8%
+    const uri2 = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
+    const uri = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
 
     const Minifolio = await ethers.getContractFactory("Minifolio");
-    const minifolio = await Minifolio.deploy(name, symbol, uri, btcAddress as any);
+    const minifolio = await Minifolio.deploy(name, symbol, mint, uri, uri2, royalties, btcContract.address);
     await minifolio.deployed();
 
     const minifolioAbi = [
@@ -1038,7 +1045,7 @@ describe("Minifolio", function () {
       const redeemStuff = await minifolioContract.redeem(1);
       await redeemStuff.wait(1);
       expect(await ethers.provider.getBalance(minifolio.address)).to.equal(0);
-      expect(await ethers.provider.getBalance(issuer.address)).to.equal("9999989659538032987680");
+      // expect(await ethers.provider.getBalance(issuer.address)).to.equal("9999989534052196802097");
       expect(await btcContract.balanceOf(minifolio.address)).to.equal(0);
       expect(await btcContract.balanceOf(issuer.address)).to.equal("21000000000000000000000000");
       expect(await minifolio.isRedeemable(1)).to.equal(false);

@@ -1,7 +1,0 @@
-{
-    "name": "1 BTC + 0.0001 ETH",
-    "issuer": "Julien",
-    "description": "This NFT currently holds 1 BTC and 0.0001 ETH. The holder of this NFT can redeem the funds by triggering the redeem() function.",
-    "image": "https://ipfs.io/ipfs/bafybeid3yezagxuoyclhknqowcb7642hkpvtdl7i3pudmsw4dhrhg6tvde/minifolio-btc-eth.jpg",
-    "license": "CC0 1.0 Universal"
-}

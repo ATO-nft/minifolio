@@ -1,5 +1,6 @@
 import { ethers } from "hardhat";
-const hre = require("hardhat");
+// const hre = require("hardhat");
+// import { handleStorage } from "../metadata/handleStorage"
 
 async function main() {
 
@@ -11,15 +12,19 @@ async function main() {
   await btc.deployed();
   console.log("BTC contract deployed at", btc.address);
 
-  // prepare deployment
-  const name = "Selection";
-  const symbol = "SELECT";
-  const cid = "bafybeihjf5qkgkxepvs4mmmd77hsw2yw52py6j2blcl4tzjxgrn6aixs7a/metadata.json";
-  const btcAddress = btc.address;
+  // handles the storage (media, license, and metadata)
+  const author = "Julien"
+  const name = "Black thistle"
+  const symbol = "THISTLE"
+  const description = "Black thistle was created using go-pixel-art (https://github.com/fairhive-labs/go-pixelart)."
+  const mint = 1 // number of editions
+  const royalties = 8 * 100 // 8%
+  const uri2 = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
+  const uri = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
 
   // deploy Minifolio
   const Minifolio = await ethers.getContractFactory("Minifolio");
-  const minifolio = await Minifolio.deploy(name, symbol, cid, btcAddress as any);
+  const minifolio = await Minifolio.deploy(name, symbol, mint, uri, uri2, royalties, btc.address);
   await minifolio.deployed();
   console.log("Minifolio contract deployed at", minifolio.address);
 
@@ -466,10 +471,10 @@ async function main() {
       "type": "function"
     }
   ] ;
-  const btcContract = new ethers.Contract(btcAddress, btcContractAbi, signer);
+  const btcContract = new ethers.Contract(btc.address, btcContractAbi, signer);
 
   const approve = await btcContract.approve(minifolio.address, btcAmount);
-  // await approve.wait(1);
+  await approve.wait(1);
   console.log("Minifolio approved.");
 
   // send BTC
@@ -1008,8 +1013,8 @@ async function main() {
   // console.log("BTC and ETH successfully redeemed!");
 
   // Etherscan verification
-  await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, cid, btcAddress as any,], });
-  console.log("Etherscan verification done. ✅");
+  // await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, cid, btcAddress as any,], });
+  // console.log("Etherscan verification done. ✅");
   console.log("Thanks for using Minifolio.");
 }
 
