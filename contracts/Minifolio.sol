@@ -18,6 +18,7 @@ contract Minifolio is ERC721, RedeemableURIStorage, ERC721Burnable, Ownable, ERC
 	Counters.Counter private _tokenIdCounter;
 
     address public btcAddress;
+	address public nftAddress;
 
 	/// @notice constructor
 	/// @param _name name of ERC-721 token
@@ -33,13 +34,15 @@ contract Minifolio is ERC721, RedeemableURIStorage, ERC721Burnable, Ownable, ERC
 		string memory _uri,
 		string memory _uriRedeemed,
 		uint256 _royalties,
-        address _btcAddress
+        address _btcAddress,
+		address _nftAddress
 	)
 	ERC721(_name, _symbol)
 	{
 		_mintBatch(_mintNumber, _uri, _uriRedeemed);
 		_setRoyalties(owner(), _royalties);
         btcAddress = _btcAddress;
+		nftAddress = _nftAddress;
 	}
 
 	function totalSupply()
@@ -122,7 +125,7 @@ contract Minifolio is ERC721, RedeemableURIStorage, ERC721Burnable, Ownable, ERC
 		require(ownerOf(tokenId) == msg.sender, "You are not the owner of this token");
 		ERC20(btcAddress).transfer(ownerOf(tokenId), ERC20(btcAddress).balanceOf(address(this)));
 		payable(ownerOf(tokenId)).transfer(address(this).balance);
-		// add an nft transfer here
+		ERC721(nftAddress).transferFrom(address(this),ownerOf(tokenId),1);
 		super.redeem(tokenId);
 	}
 
