@@ -1,42 +1,44 @@
-import { ethers } from "hardhat";
-const hre = require("hardhat");
+import { ethers } from "hardhat"
+const hre = require("hardhat")
 import { handleStorage } from "../metadata/handleStorage"
+var clc = require("cli-color")
 
 async function main() {
 
-  const [signer] = await ethers.getSigners();
+  const [signer] = await ethers.getSigners()
 
   // deploy BTC.sol
-  const BTC = await ethers.getContractFactory("BTC");
-  const btc = await BTC.deploy();
-  await btc.deployed();
-  console.log("BTC contract deployed ✅", btc.address);
+  const BTC = await ethers.getContractFactory("BTC")
+  const btc = await BTC.deploy()
+  await btc.deployed()
+  console.log("BTC contract deployed ✅", btc.address)
 
   // handles the storage (media, license, and metadata)
-  const author = "Julien"
-  const name = "Black thistle"
-  const symbol = "THISTLE"
-  const description = "Black thistle was created using go-pixel-art (https://github.com/fairhive-labs/go-pixelart). For Real."
+  const author = "Crypto Family Fund"
+  const name = "CCF"
+  const symbol = "50"
+  const description = "Holds 50% in BCT, 50% in ETH. The holder of this NFT can withdraw these assets at anytime."
   const mint = 1 // number of editions
   const royalties = 8 * 100 // 8%
 
   // before redeem
-  const uri = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
-  
-  // after redeem
   const mediaFileName = "thistle-black-pixel.jpg"
   const licenseFileName = "thistle-test-IP-license.pdf"
-  const uri2 = await handleStorage(name, author, description, mediaFileName, licenseFileName)
-
+  const uri = await handleStorage(name, author, description, mediaFileName, licenseFileName)
+  
+  // after redeem
+  const uri2 = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
 
   // deploy Minifolio
-  const Minifolio = await ethers.getContractFactory("Minifolio");
+  console.log("Deployment started...")
+  const Minifolio = await ethers.getContractFactory("Minifolio")
   const minifolio = await Minifolio.deploy(name, symbol, mint, uri, uri2, royalties, btc.address);
   await minifolio.deployed();
-  console.log("Minifolio contract deployed. ✅", minifolio.address);
+  var msg = clc.xterm(39).bgXterm(128);
+  console.log("Minifolio contract deployed. ✅", msg(minifolio.address));
 
   // approve Minifolio
-  const btcAmount = ethers.utils.parseEther("1");
+  const btcAmount = ethers.utils.parseEther("1")
   const btcContractAbi = [
     {
       "inputs": [],
@@ -478,16 +480,16 @@ async function main() {
       "type": "function"
     }
   ] ;
-  const btcContract = new ethers.Contract(btc.address, btcContractAbi, signer);
+  const btcContract = new ethers.Contract(btc.address, btcContractAbi, signer)
 
-  const approve = await btcContract.approve(minifolio.address, btcAmount);
-  await approve.wait(1);
-  console.log("Minifolio contract approved. ✅");
+  const approve = await btcContract.approve(minifolio.address, btcAmount)
+  await approve.wait(1)
+  console.log("BTC approved. ✅")
 
   // send BTC
-  const transferBTC = await btcContract.transfer(minifolio.address, btcAmount);
-  await transferBTC.wait(2);
-  console.log("BTC loaded: Minifolio is currently holding", ethers.utils.formatEther(await btcContract.balanceOf(minifolio.address)),"BTC ✅");
+  const transferBTC = await btcContract.transfer(minifolio.address, btcAmount)
+  await transferBTC.wait(1)
+  console.log("BTC loaded: Minifolio is currently holding", ethers.utils.formatEther(await btcContract.balanceOf(minifolio.address)),"BTC ✅")
 
   // send ETH
   const transferETH = await signer.sendTransaction({
@@ -495,7 +497,7 @@ async function main() {
     value: ethers.utils.parseEther("0.0001")
   });
   await transferETH.wait(2);
-  console.log("ETH loaded. ✅ Minifolio is currently holding", ethers.utils.formatEther(await ethers.provider.getBalance(minifolio.address)),"ETH ✅");
+  console.log("ETH loaded. ✅ Minifolio is currently holding 0.0001 ETH ✅")
   // redeem: uncomment this part if you want to also test the redeem part.
   const minifolioAbi = [
     {
@@ -1011,20 +1013,20 @@ async function main() {
       "type": "receive"
     }
   ];
-  const minifolioContract = new ethers.Contract(minifolio.address, minifolioAbi, signer);
-  console.log("URI before redeem ✅", await minifolioContract.tokenURI(1))
-  const redeemStuff = await minifolioContract.redeem(1);
-  await redeemStuff.wait(1);
-  console.log("BTC and ETH successfully redeemed. ✅");
-  console.log("URI after redeem ✅", await minifolioContract.tokenURI(1))
+  // const minifolioContract = new ethers.Contract("0x5B750d1f864Cc8C929411015d2fbaEbdb6DB0BF6", minifolioAbi, signer)
+  // console.log("URI before redeem ✅", await minifolioContract.tokenURI(1))
+  // const redeemStuff = await minifolioContract.redeem(1)
+  // await redeemStuff.wait(1)
+  // console.log("BTC and ETH successfully redeemed. ✅")
+  // console.log("URI after redeem ✅", await minifolioContract.tokenURI(1))
 
-  // Etherscan verification
-  // await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, mint, uri, uri2, royalties, btc.address ], });
-  console.log("Etherscan verification done. ✅");
-  console.log("Thanks for using Minifolio! 👋");
+  // // Etherscan verification
+  // await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, mint, uri, uri2, royalties, btc.address ], })
+  // console.log("Etherscan verification done. ✅")
+  console.log("Thanks for using Minifolio! 👋")
 }
 
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+  console.error(error)
+  process.exitCode = 1
 });
