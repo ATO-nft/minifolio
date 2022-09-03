@@ -1051,7 +1051,7 @@ async function main() {
   // console.log("URI after redeem ✅", await minifolioContract.tokenURI(1))
 
   // Etherscan verification
-  await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, mint, uri, uri2, royalties, btc.address, thistle.address ], })
+  // await hre.run("verify:verify", { network: "goerli", address: minifolio.address, constructorArguments: [ name, symbol, mint, uri, uri2, royalties, btc.address, thistle.address ], })
   console.log("Etherscan verification done. ✅")
   console.log("Thanks for using Minifolio! 👋")
 }
