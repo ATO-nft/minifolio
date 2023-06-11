@@ -2,7 +2,6 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { handleStorage } from "../metadata/handleStorage"
-import { Thistle__factory } from "../typechain-types";
 
 describe("Minifolio", function () {
 
@@ -13,15 +12,6 @@ describe("Minifolio", function () {
     const BTC = await ethers.getContractFactory("BTC");
     const btc = await BTC.deploy();
     await btc.deployed();
-
-    const thistleName = "Thistle"
-    const thistleSymbol = "THISTLE"
-    const thisleURI = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
-    const resaleRights = 8 * 100 // 8%
-
-    const Thistle = await ethers.getContractFactory("Thistle");
-    const thistle = await Thistle.deploy(thistleName, thistleSymbol, thisleURI, resaleRights);
-    await thistle.deployed();
 
     const btcContractAbi = [
       {
@@ -466,14 +456,14 @@ describe("Minifolio", function () {
     ] ;
     const btcContract = new ethers.Contract(btc.address, btcContractAbi, issuer);
 
-    const name = "Crypto Family Fund Revival II"
-    const symbol = "CFF"
-    const description = "Holds 50% in BCT, 50% in ETH and 1 Thistle NFT. The holder of this NFT can withdraw these assets at anytime."
+    const name = "NFT bank note"
+    const symbol = "NOTE"
+    const description = "This NFT holds 1 BTC."
     const uri2 = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
     const uri = "https://ipfs.io/ipfs/bafybeieqdjf6acdw2hwymztudsp2lbyqzngyhfznu2fsktgwqvyzmp5mui/metadata.json"
 
     const Minifolio = await ethers.getContractFactory("Minifolio");
-    const minifolio = await Minifolio.deploy(name, symbol, 1, uri, uri2, 800, btcContract.address, thistle.address);
+    const minifolio = await Minifolio.deploy(name, symbol, 1, uri, uri2, 800, btcContract.address);
     await minifolio.deployed();
 
     const minifolioAbi = [
@@ -992,7 +982,7 @@ describe("Minifolio", function () {
     ];
     const minifolioContract = new ethers.Contract(minifolio.address, minifolioAbi, issuer);
 
-    return { issuer, bob, alice, btc, btcContract, minifolio, minifolioContract, name, symbol, uri, thistle };
+    return { issuer, bob, alice, btc, btcContract, minifolio, minifolioContract, name, symbol, uri };
   }
 
   describe("Deployment", function () {
@@ -1028,17 +1018,12 @@ describe("Minifolio", function () {
       await transferETH.wait(1);
       expect(await ethers.provider.getBalance(minifolio.address)).to.equal(ethAmount);
     });
-    it("Should send NFT to Minifolio", async function () {
-      const { minifolio, issuer, alice, thistle} = await loadFixture(deployContractsFixture);
-      await thistle.transferFrom(issuer.address, minifolio.address, 1)
-      expect(await thistle.ownerOf(1)).to.equal(minifolio.address);
-      expect(thistle.transferFrom(issuer.address, alice.address, 1)).to.be.revertedWith("ERC721: caller is not token owner nor approved")
-    });
+
   });
 
   describe("Redeem", function () {
-    it("Should redeem 1 BTC, 0.0001 ETH and the NFT", async function () {
-      const { btcContract, minifolio, minifolioContract, issuer, thistle } = await loadFixture(deployContractsFixture);
+    it("Should redeem 1 BTC", async function () {
+      const { btcContract, minifolio, minifolioContract, issuer } = await loadFixture(deployContractsFixture);
       const btcAmount = ethers.utils.parseEther("1")
       const approval = await btcContract.connect(issuer).approve(minifolio.address, btcAmount);
       await approval.wait(1);
@@ -1050,18 +1035,13 @@ describe("Minifolio", function () {
         to: minifolio.address,
         value: ethAmount
       });
-      await transferETH.wait(1);
-      await thistle.transferFrom(issuer.address, minifolio.address, 1)
-      expect(await thistle.ownerOf(1)).to.equal(minifolio.address);
 
       const redeemStuff = await minifolioContract.redeem(1);
       await redeemStuff.wait(1);
-      expect(await ethers.provider.getBalance(minifolio.address)).to.equal(0);
+      expect(await ethers.provider.getBalance(minifolio.address)).to.equal(ethers.utils.parseEther("0.0001"));
       expect(await btcContract.balanceOf(minifolio.address)).to.equal(0);
       expect(await btcContract.balanceOf(issuer.address)).to.equal("21000000000000000000000000");
       expect(await minifolio.isRedeemable(1)).to.equal(false);
-      expect(await thistle.ownerOf(1)).to.equal(issuer.address);
-
 
     });
   });
