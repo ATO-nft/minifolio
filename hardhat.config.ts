@@ -13,20 +13,14 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    polygon: {
-      url: process.env.POLYGON_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    donau: {
-      url: "https://pre-rpc.bt.io/",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
+    "mantle-testnet": {
+      url: "https://rpc.testnet.mantle.xyz/",
+      accounts: "940ed0b0bf29094a226cd7a24db987e61567560f798a1b897f8ec26cbd517736" !== undefined ? ["940ed0b0bf29094a226cd7a24db987e61567560f798a1b897f8ec26cbd517736"] : [],
+    }
   }, 
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
-  },
+  // etherscan: {
+  //   apiKey: process.env.ETHERSCAN_API_KEY,
+  // },
 };
   
 export default config;  
